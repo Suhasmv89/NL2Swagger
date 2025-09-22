@@ -1,0 +1,451 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Employee Directory API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "http://www.example.com/support",
+      "email": "support@example.com"
+    }
+  },
+  "host": "api.example.com",
+  "basePath": "/v1",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Bearer Token"
+    }
+  },
+  "paths": {
+    "/employees": {
+      "get": {
+        "operationId": "getEmployees",
+        "summary": "Retrieve a list of employees",
+        "parameters": [
+          {
+            "name": "department",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by department"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string",
+            "description": "Sort order"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "Free-text search across first_name, last_name, and email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of employees",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total": {
+                  "type": "integer"
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "type": "integer"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Employee"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createEmployee",
+        "summary": "Create a new employee",
+        "parameters": [
+          {
+            "name": "employee",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Employee"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Employee created",
+            "schema": {
+              "$ref": "#/definitions/Employee"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/{id}": {
+      "get": {
+        "operationId": "getEmployeeById",
+        "summary": "Retrieve an employee by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the employee"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee details",
+            "schema": {
+              "$ref": "#/definitions/Employee"
+            }
+          },
+          "404": {
+            "description": "Employee not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "updateEmployee",
+        "summary": "Update an employee",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the employee"
+          },
+          {
+            "name": "employee",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Employee"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Employee updated"
+          },
+          "404": {
+            "description": "Employee not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "partialUpdateEmployee",
+        "summary": "Partially update an employee",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the employee"
+          },
+          {
+            "name": "employee",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Employee"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Employee partially updated"
+          },
+          "404": {
+            "description": "Employee not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "deleteEmployee",
+        "summary": "Delete an employee",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the employee"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Employee soft-deleted"
+          },
+          "404": {
+            "description": "Employee not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/search": {
+      "get": {
+        "operationId": "searchEmployees",
+        "summary": "Search for employees",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "Search query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Employee"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/departments": {
+      "get": {
+        "operationId": "getDepartments",
+        "summary": "Retrieve a list of departments",
+        "responses": {
+          "200": {
+            "description": "A list of departments",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Department"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/departments/{id}": {
+      "get": {
+        "operationId": "getDepartmentById",
+        "summary": "Retrieve a department by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the department"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Department details",
+            "schema": {
+              "$ref": "#/definitions/Department"
+            }
+          },
+          "404": {
+            "description": "Department not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Employee": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "departmentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "hiringDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "employee",
+            "manager",
+            "admin"
+          ]
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName",
+        "email",
+        "departmentId"
+      ]
+    },
+    "Department": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "managerId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "instance": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
