@@ -1,0 +1,147 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Customer API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "https://support.example.com",
+      "email": "support@example.com"
+    }
+  },
+  "host": "api.example.com",
+  "basePath": "/v1",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "OAuth2": {
+      "type": "oauth2",
+      "authorizationUrl": "https://auth.example.com/oauth/authorize",
+      "tokenUrl": "https://auth.example.com/oauth/token",
+      "flow": "accessCode",
+      "scopes": {
+        "read:customers": "Read customer details"
+      }
+    }
+  },
+  "paths": {
+    "/customers/{customerId}": {
+      "get": {
+        "operationId": "getCustomerById",
+        "summary": "Fetch customer details by ID",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer details retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            },
+            "headers": {
+              "X-RateLimit-Limit": {
+                "type": "integer",
+                "description": "The number of allowed requests in the current period"
+              },
+              "X-RateLimit-Remaining": {
+                "type": "integer",
+                "description": "The number of remaining requests in the current period"
+              },
+              "X-RateLimit-Reset": {
+                "type": "integer",
+                "description": "The time at which the current rate limit window resets"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "read:customers"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Customer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "12345"
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "email": {
+          "type": "string",
+          "example": "john.doe@example.com"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-10-01T12:00:00Z"
+        }
+      }
+    },
+    "Problem": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "instance": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
